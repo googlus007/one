@@ -1,0 +1,256 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lab_3_Я_
+{
+    public class Date
+    {
+        public int day;
+        public int month;
+        public int year;
+        public static int count = 0;
+
+
+       public Date() //Конструктор без параметров
+        {
+            day = 0;
+            month = 0;
+            year = 0;
+            count++;
+        }
+
+        public Date(int d1, int m1, int y1) //Конструктор с параметрами
+        {
+            day = d1;
+            month = m1;
+            year = y1;
+            count++;
+        }
+
+        public static int st;
+        static Date() //Конструктор статический
+        {
+            st = 100;
+            Console.WriteLine("Статический конструктор сработал");
+        }
+
+        private Date(int priv)
+        {
+            priv = 2018;
+            Console.WriteLine("Закрытый конструктор сработал");
+        }
+
+        public static void Sttc(int cc)
+        {
+            Console.WriteLine($"Object amount: {cc}");
+        }
+
+        readonly int RD = 123; //read
+
+        const int cnst = 1234; //const
+
+        public int Day
+        {
+            set{
+                if(value > 31 || value < 1)
+                {
+                    Console.WriteLine("Wrong value");
+                    day = 1;
+                }
+                else
+                {
+                    day = value;
+                }
+            }
+            get
+            {
+                return day;
+            }
+        }
+
+        public int Month
+        {
+            set
+            {
+                if (value > 12 || value < 1)
+                {
+                    Console.WriteLine("Wrong value");
+                    month = 1;
+                }
+                else
+                {
+                    month = value;
+                }
+            }
+            get
+            {
+                return month;
+            }
+        }
+
+        public void Ref(ref int init)
+        {
+            init++;
+            Console.WriteLine($"Ref method: {init}");
+        }
+
+        public void Out(out int uninit)
+        {
+            uninit = 5;
+            uninit++;
+            Console.WriteLine($"Out metodh: {uninit}");
+        }
+
+        public static void Print(int dd, int mm, int yy)
+        {
+            Console.Write($"Date: {dd}/{mm}/{yy}");
+        }
+
+        public static void PrintWord(int dd, int mm, int yy)
+        {
+            string[] months = { "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря" };
+            Console.WriteLine($"// {dd} {months[mm - 1]} {yy} года");
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != this.GetType()) return false;
+
+            Date eqls = (Date)obj;
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
+
+    static partial class Prt1
+    {
+        public static void Prtl1()
+        {
+            Console.Write("Partial class");
+        }
+    }
+    class program
+    {
+        static void Main(string[] args)
+        {
+            Date dt = new Date();
+            Console.WriteLine("Enter day: ");
+            dt.Day = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter month: ");
+            dt.Month = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter year: ");
+            dt.year = int.Parse(Console.ReadLine());
+            Console.WriteLine();
+            Date.Print(dt.day, dt.month, dt.year);
+            Date.PrintWord(dt.day, dt.month, dt.year);
+
+            Date dt1 = new Date(12, 1, 2018);
+            Date.Print(dt1.day, dt1.month, dt1.year);
+            Date.PrintWord(dt1.day, dt1.month, dt1.year);
+
+            Date[] dt2 = new Date[5];
+
+            dt2[0] = new Date
+            {
+                day = 16,
+                month = 5,
+                year = 1999
+            };
+
+            dt2[1] = new Date
+            {
+                day = 14,
+                month = 12,
+                year = 1999
+            };
+
+            dt2[2] = new Date
+            {
+                day = 4,
+                month = 10,
+                year = 1999
+            };
+
+            dt2[3] = new Date
+            {
+                day = 5,
+                month = 2,
+                year = 2000
+            };
+
+            dt2[4] = new Date();
+            dt2[4].day = 2;
+            dt2[4].month = 7;
+            dt2[4].year = 2000;
+
+            var vdate = new { day = 21, month = 10, year = 2018 };
+            Date.Print(vdate.day, vdate.month, vdate.year);
+            Date.PrintWord(vdate.day, vdate.month, vdate.year);
+
+            Console.WriteLine();
+            Console.WriteLine("Choose year: ");
+            int uyear = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Dates with chosen year: ");
+            for (int i = 0; i < dt2.Length; i++)
+            {
+                if (uyear == dt2[i].year)
+                {
+                    Date.Print(dt2[i].day, dt2[i].month, dt2[i].year);
+                    Date.PrintWord(dt2[i].day, dt2[i].month, dt2[i].year);
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Choose day: ");
+            int uday = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Dates with chosen day: ");
+            for (int i = 0; i < dt2.Length; i++)
+            {
+                if (uday == dt2[i].day)
+                {
+                    Date.Print(dt2[i].day, dt2[i].month, dt2[i].year);
+                    Date.PrintWord(dt2[i].day, dt2[i].month, dt2[i].year);
+                }
+            }
+            Console.WriteLine();
+
+            int init = 5;
+            int uninit;
+            Date.Sttc(Date.count);
+
+            Prt1.Prtl1();
+            Prt1.Prtl1();
+
+            bool eql = dt.Equals(dt1);
+            bool eql0 = dt2[0].Equals(dt2[1]);
+
+            Console.WriteLine("Equal dt/dt1: " + eql + "\nEqual dt2[0]/dt2[1]: " + eql0);
+
+            Console.WriteLine("Hash: dt - " + (dt.GetHashCode()) + ", dt1 - " + dt1.GetHashCode() + ", dt2 - " + dt2.GetHashCode());
+
+            Console.WriteLine("ToString: dt - " + dt.ToString() + ", dt1 - " + dt1.ToString() + ", dt2 - " + dt2.ToString());
+
+            Console.WriteLine("Anon: " + vdate.GetType());
+
+            Console.WriteLine($"Main method: {init}");
+            dt.Ref(ref init);
+            dt.Out(out uninit);
+
+            
+        }
+    }
+}
