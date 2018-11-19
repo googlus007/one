@@ -1,0 +1,259 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections;
+
+namespace OOP4
+{
+
+    class Owner
+
+    {
+        static int id;
+        int ID;
+        string name;
+        string organization;
+
+        public Owner() //конструктор для инициализации
+
+        {
+            id++;
+            ID = id;
+        }
+
+        public Owner(string name, string organization) : this()
+        {
+            this.name = name;
+            this.organization = organization;
+        } // то же самое
+
+
+
+        public void info() // метод для вывода
+        {
+            Console.WriteLine($"ID: {ID}");
+            Console.WriteLine($"Name: {name}");
+            Console.WriteLine($"Organization: {organization}");
+            Console.WriteLine();
+        }
+    }
+
+    public class Set
+    {
+        Owner me = new Owner("Vladimir Gitsarev", "MyCompany"); //вложенный объект
+
+        class Date
+        {
+            public DateTime date = new DateTime();
+            public Date()
+            {
+                date = DateTime.Now;
+            }
+
+        }
+
+        Date date = new Date();
+
+        public void info()
+        {
+            Console.WriteLine("Date:" + date.date);
+            me.info();
+        }
+
+        public int[] set = new int[5];
+        public int[] set0 = new int[10];
+
+        public void Auto(int[] set)
+        {
+            //Random rand = new Random();
+            for (int i = 0; i < set.Length; i++)
+            {
+                set[i] = int.Parse(Console.ReadLine());
+            }
+        }
+
+        public void Write(int[] stt)
+        {
+            for (int i = 0; i < set.Length; i++)
+                Console.Write(stt[i] + " ");
+            Console.WriteLine();
+
+        }
+
+
+        public static Set operator *(Set vr1, Set vr2) //пересечение
+        {
+            int am = 0;
+            Set result = new Set();
+            for (int i = 0; i < vr1.set.Length; i++)
+                for (int j = 0; j < 5; j++)
+                    if (vr1.set[i] == vr2.set[j])
+                    {
+                        result.set[am] = vr1.set[i];
+                        am++;
+                    }
+            Console.WriteLine("Intersection: ");
+            for (int i = 0; i < am; i++)
+                Console.Write(result.set[i] + " ");
+            Console.WriteLine();
+            return result;
+        }
+
+        public static Set operator &(Set vr1, Set vr2)
+        {
+            Set result = new Set();
+
+            vr1.set.CopyTo(result.set0, 0);
+            vr2.set.CopyTo(result.set0, vr1.set.Length);
+            Console.WriteLine("Concatenation: ");
+            for (int i = 0; i < (vr1.set.Length + vr2.set.Length); i++)
+                Console.Write(result.set0[i] + " ");
+            Console.WriteLine();
+            return result;
+        }
+
+
+        public static bool operator <(Set vr1, Set vr2) //Сравнение множеств
+        {
+            bool result = false;
+            int check = 0;
+            for (int i = 0; i < vr1.set.Length; i++)
+                if (vr1.set[i] == vr2.set[i])
+                    check++;
+            if (check == vr1.set.Length)
+                result = true;
+            return result;
+        }
+
+        public static bool operator >(Set vr1, Set vr2) //Сравнение сумм множеств
+        {
+            bool result = false;
+            int sum1 = 0;
+            int sum2 = 0;
+            for (int i = 0; i < vr1.set.Length; i++)
+            {
+                sum1 += vr1.set[i];
+                sum2 += vr2.set[i];
+            }
+            if (sum1 < sum2)
+                result = true;
+            return result;
+        }
+
+    }
+
+    public static class MathOperations
+    {
+        public static int sum = 0;
+
+        static public int Mx(this Set vr1) //Ето номер 4
+        {
+            int max = vr1.set[0];
+            for (int i = 0; i < vr1.set.Length; i++)
+            {
+                if (vr1.set[i] > max)
+                    max = vr1.set[i];
+            }
+            return max;
+        }
+
+        static public int Mn(this Set vr1)
+        {
+            int min = vr1.set[0];
+            for (int i = 0; i < vr1.set.Length; i++)
+                if (vr1.set[i] < min)
+                    min = vr1.set[i];
+            return min;
+        }
+
+        public static int Sum(this Set vr1)
+        {
+
+            for (int i = 0; i < vr1.set.Length; i++)
+                sum++;
+            return sum;
+        }
+
+        public static void Null(int[] st1) //Номер 5, задания в варианте а) и б) (В б сделано не то)
+        {
+            Random rand = new Random();
+            int i = 0;
+            for (i = 0; i < st1.Length; i++)
+            {
+                if (st1[i] == 0)
+                    st1[i] = rand.Next(10);
+                Console.Write(st1[i] + " ");
+            }
+            Console.WriteLine();
+
+        }
+
+        public static string Str(string str)
+        {
+            char dot = '.';
+            str = str.Insert(str.Length, dot.ToString());
+            return str;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Set st1 = new Set();
+            Set st2 = new Set();
+            Set st3 = new Set();
+            Set st4 = new Set();
+            Set st5 = new Set();
+            Set st6 = new Set();
+            Set st7 = new Set();
+            bool res;
+            bool res0;
+
+
+            st1.Auto(st1.set);
+            st1.Write(st1.set);
+            Thread.Sleep(100);
+            st2.Auto(st2.set);
+            st2.Write(st2.set);
+            Thread.Sleep(100);
+            st3.Auto(st3.set);
+            st3.Write(st3.set);
+            Thread.Sleep(100);
+
+            st4 = st1 * st2;
+            st5 = st2 * st3;
+
+            st6 = st2 & st3;
+            st7 = st1 & st2;
+
+            res = st1 < st2;
+            Console.WriteLine("\nEqual: " + res);
+
+            res0 = st1 > st2;
+            Console.WriteLine("First less than second: " + res0);
+
+            st1.info();
+
+            MathOperations.Null(st1.set);
+
+            Console.WriteLine("Max: " + st2.Mx());
+            Console.WriteLine("Min: " + st3.Mn());
+            Console.WriteLine("Sum: " + st1.Sum());
+
+            Console.WriteLine("Enter string: ");
+            string str = Console.ReadLine();
+
+
+            Console.WriteLine("New string: " + MathOperations.Str(str));
+
+            Console.WriteLine("Спокойной ночи, Лена :)");
+        }
+
+
+    }
+}
+
