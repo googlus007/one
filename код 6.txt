@@ -1,0 +1,360 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OOP6
+{
+    class Program
+    {
+        interface IPlant
+        {
+            void info(string str);
+        }
+
+        interface IPlants
+        {
+            string color { get; set; }
+            string country { get; set; }
+            int height { get; set; }
+
+            void info();
+        }
+
+        abstract class Plants : IPlant, IPlants, IComparable
+        {
+            public string color { get; set; }
+            public string country { get; set; }
+            public int height { get; set; }
+            public int cost { get; set; }
+            public bool rare { get; set; }
+
+            public int CompareTo(object obj)
+            {
+                Plants other = obj as Plants;
+                    return this.cost.CompareTo(other.cost);
+            }
+
+            void IPlants.info()
+            {
+                if (rare)
+                    Console.WriteLine("Rare species");
+                else
+                    Console.WriteLine("Spread species");
+            }
+
+            void IPlant.info(string str)
+            {
+                Console.WriteLine(str);
+            }
+
+            public virtual void Add()
+            {
+                Console.WriteLine("Enter plant color");
+                color = Console.ReadLine();
+                Console.WriteLine("Enter plant origin");
+                country = Console.ReadLine();
+                Console.WriteLine("Enter plant height");
+                height = int.Parse(Console.ReadLine());
+                Console.WriteLine("Is it rare? (y/n)");
+                char a = char.Parse(Console.ReadLine());
+
+                if (a == 'Y' || a == 'y')
+                    rare = true;
+                else
+                    rare = false;
+            }
+
+            public virtual void Type()
+            {
+                Console.WriteLine("Plants");
+            }
+
+            public override string ToString()
+            {
+                string r;
+                if (rare)
+                    r = "Rare plant";
+                else
+                    r = "Spread plant";
+                return r + "\nColor: " + color + "; Origin: " + country + "; Height: " + height + "; Cost: " + cost + "\n";
+            }
+        }
+
+        class Bush : Plants
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a bush!");
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return base.Equals(obj);
+            }
+        }
+
+        class Flower : Plants
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a flower!");
+            }
+        }
+
+        sealed class Rose : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine("Rose");
+            }
+
+            public Rose()
+            {
+                color = "Red";
+                country = "Netherland";
+                height = 30;
+                cost = 5;
+                rare = false;
+            }
+        }
+
+        sealed class Gladiolus : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine("Gladiolus");
+            }
+
+            public Gladiolus()
+            {
+                color = "White";
+                country = "Madagascar";
+                height = 50;
+                cost = 10;
+                rare = true;
+            }
+        }
+
+        sealed class Cactus : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine("Cactus");
+            }
+
+            public Cactus()
+            {
+                color = "Green";
+                country = "Mexico";
+                height = 75;
+                cost = 15;
+                rare = false;
+            }
+        }
+
+        class Printer
+        {
+            public virtual void IAmPrinting(Plants obj)
+            {
+                Console.WriteLine(obj.ToString() + "\n" + obj.GetType());
+            }
+        }
+
+        public partial class Part
+        {
+            public static void Part1()
+            {
+                Console.WriteLine("This is part 1");
+            }
+        }
+
+        enum numbers : int
+        {
+            one = 1,
+            two,
+            three,
+            four,
+            five = 5
+        }
+
+        struct Student
+        {
+            public string name;
+            public int age;
+            public string city;
+            public string university;
+        }
+
+        class Bouquet
+        {      
+
+            public Plants[] arr = new Plants[0];
+
+            public Plants AddEl
+            {
+                get { return AddEl; }
+                set { Array.Resize(ref arr, arr.Length + 1); arr[arr.Length - 1] = value; }
+            }
+
+            public void Show()
+            {
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Console.Write($"{i + 1}.");
+                    arr[i].Type();
+                    Console.WriteLine($"Info:\n{arr[i].ToString()}");
+                }
+
+                if (arr.Length == 0)
+                    Console.WriteLine("Bouquet is empty");
+
+            }
+
+            public void Delete(int num)
+            {
+                for (int i = num - 1; i < arr.Length - 1; i++)
+                    arr[i] = arr[i + 1];
+                Array.Resize(ref arr, arr.Length - 1);
+            }
+
+            public void Find(string clr)
+            {
+                int count = 0;
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (arr[i].color == clr)
+                    {
+                        count++;
+                        Console.Write($"{i + 1}.");
+                        arr[i].Type();
+                    }
+                }
+                if (count == 0)
+                    Console.WriteLine("No such flowers");
+            }
+
+            public void Cost()
+            {
+                int cost = 0;
+                for (int i = 0; i < arr.Length; i++)
+                    cost += arr[i].cost;
+                Console.WriteLine($"Your bouquet costs: {cost} rub");
+            }
+
+            public void Sort()
+            {
+                var list = new List<Plants>();
+
+                for (int i = 0; i < arr.Length; i++)
+                    list.Add(arr[i]);
+                list.Sort();
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Console.Write($"{i + 1}.");
+                    list[i].Type();
+                    Console.WriteLine($"Cost: {list[i].cost}");
+                }
+            }
+        }
+            public class Control
+            {
+                
+
+                Bouquet bqt = new Bouquet();
+
+                public void AddEl()
+                {
+                    Console.WriteLine("What do you want to add?\n1)Rose\n2)Gladiolus\n3)Cactus");
+
+                    int choose = int.Parse(Console.ReadLine());
+                    switch (choose)
+                    {
+                        case 1: bqt.AddEl = new Rose(); break;
+                        case 2: bqt.AddEl = new Gladiolus(); break;
+                        case 3: bqt.AddEl = new Cactus(); break;
+                        default: Console.WriteLine("Wrong value"); break;
+                    }
+                    Console.WriteLine("Flower added");
+                }
+
+                public void Show()
+                {
+                    Console.WriteLine("\nYour bouquet: ");
+                    bqt.Show();
+                }
+
+                public void Delete()
+                {
+                    int num;
+                    Console.WriteLine("Enter element number");
+                    num = int.Parse(Console.ReadLine());
+                    bqt.Delete(num);
+                }
+
+                public void Find()
+                {
+                    Console.WriteLine("Enter color: ");
+                    string clr = Console.ReadLine();
+                    Console.WriteLine("Found flowers: ");
+                    bqt.Find(clr);
+
+                }
+
+                public void Cost()
+                {
+                    bqt.Cost();
+                }
+
+                public void Sort()
+                {
+                    bqt.Sort();
+                }           
+            }
+
+
+            static void Main(string[] args)
+            {
+
+
+                Student student = new Student
+                {
+                    name = "Vladimir",
+                    age = 19,
+                    city = "Navapolatsk",
+                    university = "BSTU"
+                };
+
+                Console.WriteLine($"Info: {student.name}, {student.age}, {student.city}, {student.university}");
+
+                Part.Part1();
+                //Part.Part2();
+
+                Control ctrl = new Control();
+                int choose;
+                Console.WriteLine("Choose action: \n1)Add new\n2)Show bouquet\n3)Delete element\n4)Find flower\n5)Bouquet cost\n6)Sort by cost");
+                do
+                {
+                    choose = int.Parse(Console.ReadLine());
+                    switch (choose)
+                    {
+                        case 1: ctrl.AddEl(); break;
+                        case 2: ctrl.Show(); break;
+                        case 3: ctrl.Delete(); break;
+                        case 4: ctrl.Find(); break;
+                        case 5: ctrl.Cost(); break;
+                        case 6: ctrl.Sort(); break;
+                        default: break;
+                    }
+                if (choose != 0)
+                    Console.WriteLine("\nWhat's next: ");
+                } while (choose != 0);
+            }
+    }
+}

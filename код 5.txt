@@ -1,0 +1,189 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OOP5
+{
+    class Program
+    {
+        interface IPlant
+        {
+            void info(string str);
+        }
+
+        interface IPlants
+        {
+            string color { get; set; }
+            string country { get; set; }
+            int height { get; set; }
+
+            void info();
+        }
+
+        abstract class Plants : IPlant, IPlants
+        {
+            public string color { get; set; }
+            public string country { get; set; }
+            public int height { get; set; }
+            public bool rare { get; set; }
+
+            void IPlants.info()
+            {
+                if (rare)
+                    Console.WriteLine("Rare species");
+                else
+                    Console.WriteLine("Spread species");
+            }
+
+            void IPlant.info(string str)
+            {
+                Console.WriteLine(str);
+            }
+
+            public virtual void Add()
+            {
+                Console.WriteLine("Enter plant color");
+                color = Console.ReadLine();
+                Console.WriteLine("Enter plant origin");
+                country = Console.ReadLine();
+                Console.WriteLine("Enter plant height");
+                height = int.Parse(Console.ReadLine());
+                Console.WriteLine("Is it rare? (y/n)");
+                char a = char.Parse(Console.ReadLine());
+
+                if (a == 'Y' || a == 'y')
+                    rare = true;
+                else
+                    rare = false;
+            }
+
+            public virtual void Type()
+            {
+                Console.WriteLine("Plants");
+            }
+
+            public override string ToString()
+            {
+                string r;
+                if (rare)
+                    r = "Rare plant";
+                else
+                    r = "Spread plant";
+                return r + "\nColor: " + color + "\nOrigin: " + country + "\nHeight: " + height;
+            }
+        }
+        
+        class Bush : Plants
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a bush!");
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return base.Equals(obj);
+            }
+        }
+
+        class Flower : Plants
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a flower!");
+            }
+        }
+
+        sealed class Rose : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a rose!");
+            }
+        }
+
+        sealed class Gladiolus : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine("This is a gladiolus!");
+            }
+        }
+
+        sealed class Cactus : Flower
+        {
+            public override void Type()
+            {
+                Console.WriteLine($"This is a cactus!");
+            }
+
+        }
+
+        class Printer
+        {
+            public virtual void IAmPrinting(Plants obj)
+            {
+                Console.WriteLine(obj.ToString() + "\n" + obj.GetType());
+            }
+        }
+
+
+        static void Main(string[] args)
+        {
+            Bush bush = new Bush();
+            Flower flower = new Flower();
+            Rose rose = new Rose();
+            Gladiolus gladiolus = new Gladiolus();
+            Cactus cactus = new Cactus();
+
+            bush.Add();
+            flower.Add();
+            rose.Add();
+            //gladiolus.Add();
+            //cactus.Add();
+
+            bush.Type();
+            flower.Type();
+            rose.Type();
+            //gladiolus.Type(); 
+            //cactus.Type();
+
+                       
+            Printer printer = new Printer();
+
+            Plants[] plantarr = new Plants[3];
+            plantarr[0] = bush;
+            plantarr[1] = flower;
+            plantarr[2] = rose;
+            // plantarr[3] = gladiolus;
+            //plantarr[4] = cactus;
+
+            for (int i = 0; i < plantarr.Length; i++)
+            {
+                printer.IAmPrinting(plantarr[i]);
+                Console.WriteLine();
+            }
+
+            bool bl = bush is Plants;
+            if (bl)
+            {
+                Plants plants = (Plants)bush;
+                plants.Type();
+            }
+
+            IPlants plants0 = cactus as IPlants;
+            if (plants0 != null)
+            {
+                plants0.info();
+            }
+        }
+
+    }
+}
