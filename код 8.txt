@@ -1,0 +1,222 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Lab_8_Generics_
+{
+    public class StaticClass<T> : IStack<T>
+    {
+        private Stack<T> stack;
+
+        public StaticClass()
+        {
+            stack = new Stack<T>();
+        }
+
+        public void delete()
+        {
+            stack.Pop();
+        }
+
+        public void put(T element)
+        {
+            stack.Push(element);
+        }
+
+        public void Show()
+        {
+            while (stack.Count > 0)
+            {
+                Console.WriteLine(stack.Pop());
+            }
+        }
+    }
+
+    
+
+    public class Set<T>: ISet<T> where T: class
+    {
+        private T[] set;
+        private int maxIndex;
+
+        public Set()
+        {
+            set = new T[10];
+            maxIndex = 0;
+        }
+
+        public Set(int count)
+        {
+            set = new T[count];
+            maxIndex = 0;
+        }
+
+        public void put(T element)
+        {
+            for (int i = 0; i < set.Length; i++)
+            {
+                if (set[i] == element)
+                {
+                    Console.WriteLine("Элемент уже существует");
+                    break;
+                }
+                else
+                {
+                    set[maxIndex++] = element;
+                    break;
+                }
+            }
+        }
+
+        public void delete(T element)
+        {
+            for (int i = 0; i < set.Length ; i++)
+            {
+                if (set[i] == element)
+                {
+                    for (int j = i; j < set.Length - 1; j++)
+                    {
+                        set[j] = set[j + 1];
+                    }
+                    maxIndex--;
+                    break;
+                }
+            }
+        }
+
+        public void Show()
+        {
+            for (int i = 0; i < maxIndex; i++)
+            {
+                Console.WriteLine("[" + i + "] - " + set[i]);
+            }
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                return set[index];
+            }
+            set
+            {
+                set[index] = value;
+            }
+        }
+
+    }
+
+    interface ISet<T> //Интерфейс обобщенный. Обобщенный, говорит о том, что он может работать с любыми типами.
+    {
+        void put(T element);
+        void delete(T element);
+        void Show();
+    }
+
+    interface IStack<T> //Тот же самый обобщенный интерфейс только в методе delete у него нет параметров.
+    {
+        void put(T element);
+        void delete();
+        void Show();
+    }
+
+    class Student
+    {
+        private String name;
+        private int age;
+        private String studentId;
+
+        public Student(String name, int age, String studentId)
+        {
+            this.name = name;
+            this.age = age;
+            this.studentId = studentId;
+        }
+
+        public String Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        public int Age
+        {
+            get
+            {
+                return age;
+            }
+            set
+            {
+                age = value;
+            }
+        }
+
+        public String StudentId
+        {
+            get
+            {
+                return studentId;
+            }
+            set
+            {
+                studentId = value;
+            }
+        }
+
+        public override string ToString()
+        {
+            String str = "ФИО: " + name + ", Возраст: " + age + ", Студенческий билет: " + studentId;
+            return str;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                Set<Student> set = new Set<Student>();
+                Student student1 = new Student("Богатко Роман Игоревич", 20, "71800151");
+                Student student2 = new Student("Гуцев Олег Дмитриевич", 21, "71800152");
+                Student student3 = new Student("Гончар Егор Владимирович", 22, "71800153");
+                set.put(student1);
+                set.put(student2);
+                set.put(student3);
+                set.Show();
+                set.delete(student3);
+                set.Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            try
+            {
+                StaticClass<int> staticClass = new StaticClass<int>();
+                staticClass.put(1);
+                staticClass.put(2);
+                staticClass.put(3);
+                staticClass.put(4);
+                staticClass.put(5);
+                staticClass.delete();
+                staticClass.delete();
+                staticClass.Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+}
