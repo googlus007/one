@@ -1,0 +1,148 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OOP9
+{
+    class Director
+    {
+        public delegate void DirectorMove(string str);
+        public delegate int Year(int age);
+
+        Year year = (int age) => 2018 - age;
+
+        public event DirectorMove Boost;
+        public event DirectorMove Penalty;
+
+        public int boost = 0;
+        public int penalty = 0;
+        public string name;
+        public int age;
+
+        public Director()
+        {
+            name = "Vladimir Gitsarev";
+            age = 19;
+        }
+
+        public Director(string name, int age) : this()
+        {
+            this.name = name;
+            this.age = age;
+        }
+
+
+        public void DirBoost(int bst)
+        {
+            boost += bst;
+            if (Boost != null)
+                Boost("Current level: " + boost);
+            else
+                Console.WriteLine("No event");
+        }
+
+        public void DirPenalty(int pnlt)
+        {
+            penalty += pnlt;
+            if (Penalty != null)
+                Penalty("Your penalty: " + penalty);
+            else
+                Console.WriteLine("No event");
+        }
+
+        public void Info()
+        {
+            Console.WriteLine("Name: " + name);
+            Console.WriteLine("Boost: " + boost);
+            Console.WriteLine("Penalty: " + penalty + "\n");
+        }
+        
+    }
+    class Program
+    {
+        public static void Message(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        static void Main(string[] args)
+        {
+            Director person1 = new Director("Leonid Matveenko", 18);
+            Director person2 = new Director();
+            Director person3 = new Director();
+            Director person4 = new Director();
+
+            person1.Boost += Message;
+
+            person2.Penalty += Message;
+
+            person3.Boost += Message;
+            person3.Penalty += Message;
+
+            person1.DirBoost(2);
+            person1.DirPenalty(33);
+            person1.Info();
+
+            person2.DirBoost(5);
+            person2.DirPenalty(76);
+            person2.Info();
+
+            person3.DirBoost(8);
+            person3.DirPenalty(21);
+            person3.Info();
+
+            person4.DirBoost(3);
+            person4.DirPenalty(45);
+            person4.Info();
+
+            Action<string> action;
+            string str = "HeLlo WorLD";
+            action = Message;
+            action(str);
+
+            action -= Message;
+            action += TUC;
+            action(str);
+
+            action -= TUC;
+            action += TLC;
+            action(str);
+
+            action -= TLC;
+            action += ReplaceStr;
+            action(str);
+
+            action -= ReplaceStr;
+            action += RemoveStr;
+            action(str);
+        }
+
+        public static void TUC(string str)
+        {
+            str = str.ToUpper();
+            Console.WriteLine(str);
+        }
+
+        public static void TLC(string str)
+        {
+            str = str.ToLower();
+            Console.WriteLine(str);
+        }
+
+        public static void ReplaceStr(string str)
+        {
+            str = str.Replace("o", "0");
+            Console.WriteLine(str);
+        }
+
+        static public void RemoveStr(string str)
+
+        { 
+            str = str.Remove(7);
+            Console.WriteLine(str);
+        }
+    }
+}
