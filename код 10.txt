@@ -1,0 +1,188 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lab10_Collections_
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ArrayList arrayList = new ArrayList();
+
+            for (int i = 0; i < 5; i++)
+            {
+                arrayList.Add(i);
+            }
+
+            String str = "Hello my name is Dima";
+
+            arrayList.Add(str);
+
+            Student student = new Student("Dmitriy", 18);
+
+            arrayList.Add(student);
+
+            arrayList.Remove(str);
+
+            Console.WriteLine("Count of collection: " + arrayList.Count);
+
+            foreach (Object obj in arrayList)
+            {
+                Console.WriteLine(obj);
+            }
+
+            Console.WriteLine(arrayList.IndexOf(student));
+
+            List<float> list = new List<float>();
+
+            list.Add(1.75f);
+            list.Add(2.345f);
+            list.Add(-8.653f);
+            list.Add(0.243f);
+            list.Add(129.024f);
+
+            foreach (float flt in list)
+            {
+                Console.WriteLine(flt);
+            }
+
+            int count = int.Parse(Console.ReadLine());
+
+            for (int i = 0; i < count; i++)
+            {
+                list.RemoveAt(i);
+            }
+
+            foreach (float flt in list)
+            {
+                Console.WriteLine(flt);
+            }
+
+            Stack<float> stack = new Stack<float>();
+
+            foreach (float flt in list)
+            {
+                stack.Push(flt);
+            }
+
+            foreach (float stck in stack)
+            {
+                Console.WriteLine(stck);
+            }
+
+            float number = 1.75f;
+
+            Console.WriteLine(stack.Contains(number));
+
+            List<Student> students = new List<Student>();
+            Student student1 = new Student("Roma", 19);
+            Student student2 = new Student("Dmitriy", 20);
+            Student student3 = new Student("Vadim", 21);
+            Student student4 = new Student("Egor", 22);
+            Student student5 = new Student("Vladislav", 23);
+            Student student6 = new Student("Evgeniy", 24);
+
+            students.Add(student1);
+            students.Add(student2);
+            students.Add(student3);
+            students.Add(student4);
+            students.Add(student5);
+            students.Add(student6);
+
+            foreach (Student stck in students)
+            {
+                Console.WriteLine(stck);
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                students.RemoveAt(i);
+            }
+
+            Stack<Student> students2 = new Stack<Student>();
+
+            foreach (Student std in students2)
+            {
+                students2.Push(std);
+                Console.WriteLine(std);
+            }
+
+            Console.WriteLine(students2.Contains(student3));
+
+            ObservableCollection<Student> students3 = new ObservableCollection<Student>
+            {
+                new Student("Vadim", 20),
+                new Student("Andrei", 19),
+                new Student("Petya", 21)
+            };
+
+            students3.CollectionChanged += Students_CollectionChanged;
+
+            students3.Add(new Student("Evdokim", 20));
+
+            students3.RemoveAt(1);
+
+            students3[0] = new Student("Vladimir", 25);
+
+            foreach (Student std in students3)
+            {
+                Console.WriteLine(std);
+            }
+
+        }
+
+        private static void Students_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add: // если добавление
+                    Student newUser = e.NewItems[0] as Student;
+                    Console.WriteLine("Добавлен новый объект: {0}", newUser.Name);
+                    break;
+                case NotifyCollectionChangedAction.Remove: // если удаление
+                    Student oldUser = e.OldItems[0] as Student;
+                    Console.WriteLine("Удален объект: {0}", oldUser.Name);
+                    break;
+                case NotifyCollectionChangedAction.Replace: // если замена
+                    Student replacedUser = e.OldItems[0] as Student;
+                    Student replacingUser = e.NewItems[0] as Student;
+                    Console.WriteLine("Объект {0} заменен объектом {1}",
+                                        replacedUser.Name, replacingUser.Name);
+                    break;
+            }
+        }
+
+    }
+}
+
+class Student: IComparable
+{
+    private String name;
+    private int age;
+
+    public String Name { set; get; }
+    public int Age { set; get; }
+
+    public Student(String name, int age)
+    {
+        this.name = name;
+        this.age = age;
+    }
+
+    public override string ToString()
+    {
+        String str = "Имя: " + name + " Возраст: " + age;
+        return str;
+    }
+
+    public int CompareTo(object obj)
+    {
+        return age.CompareTo(obj);
+    }
+}
