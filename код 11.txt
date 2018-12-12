@@ -1,0 +1,242 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OOP11
+{
+    class Player
+    {
+        public string Name { get; set; }
+        public string Team { get; set; }
+    }
+    class Team
+    {
+        public string Name { get; set; }
+        public string Country { get; set; }
+    }
+    public class Date
+    {
+        public int day;
+        public int month;
+        public int year;
+        public static int count = 0;
+
+
+        public Date() //Конструктор без параметров
+        {
+            day = 0;
+            month = 0;
+            year = 0;
+            count++;
+        }
+
+        public Date(int d1, int m1, int y1) //Конструктор с параметрами
+        {
+            day = d1;
+            month = m1;
+            year = y1;
+            count++;
+        }
+
+
+        private Date(int priv) //Конструктор закрытый
+        {
+            priv = 2018;
+            Console.WriteLine("Закрытый конструктор сработал");
+        }
+
+        public static void Sttc(int cc)
+        {
+            Console.WriteLine($"Objects amount: {cc}");
+        }
+
+        readonly int rd = 123; //read
+
+        const int cnst = 1234; //const
+
+        public int Day
+        {
+            set
+            {
+                if (value > 31 || value < 1)
+                {
+                    Console.WriteLine("Wrong value");
+                    day = 1;
+                }
+                else
+                {
+                    day = value;
+                }
+            }
+            get
+            {
+                return day;
+            }
+        }
+
+        public int Month
+        {
+            set
+            {
+                if (value > 12 || value < 1)
+                {
+                    Console.WriteLine("Wrong value");
+                    month = 1;
+                }
+                else
+                {
+                    month = value;
+                }
+            }
+            get
+            {
+                return month;
+            }
+        }
+
+        public void Ref(ref int init)
+        {
+            init++;
+            Console.WriteLine($"Ref method: {init}");
+        }
+
+        public void Out(out int uninit)
+        {
+            uninit = 5;
+            uninit++;
+            Console.WriteLine($"Out method: {uninit}");
+        }
+
+        public static void Print(int dd, int mm, int yy)
+        {
+            Console.Write($"Date: {dd}/{mm}/{yy}");
+        }
+
+        public static void PrintWord(int dd, int mm, int yy)
+        {
+            string[] months = { "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря" };
+            Console.WriteLine($" // {dd} {months[mm - 1]} {yy} года");
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != this.GetType()) return false;
+
+            Date eqls = (Date)obj;
+            return (this.Day == eqls.Day);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
+
+    class Program
+    {
+        public static void Out(Date t)
+        {
+
+            Console.WriteLine($"{t.day}.{t.month}.{t.year}");
+        }
+
+        static void Main(string[] args)
+        {
+            string[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+            Console.Write("Enter month length: ");
+            int lngth = int.Parse(Console.ReadLine());
+            var monthSelect = from t in months where t.Length == lngth select t;
+            Console.WriteLine("Months: ");
+            foreach (string t in monthSelect)
+                Console.Write(t + " ");
+
+            monthSelect = from t in months where t == "January" || t == "February" || t == "December" || t == "June" || t == "July" || t == "August" select t;
+            Console.WriteLine("\nSummer and winter months: ");
+            foreach (string t in monthSelect)
+                Console.Write(t + " ");
+
+            Console.WriteLine("\nAlphabet order: ");
+            monthSelect = from t in months orderby t select t;
+            foreach (string t in monthSelect)
+                Console.Write(t + " ");
+
+            Console.WriteLine("\nContain u and longer than 4: ");
+            monthSelect = from t in months where t.Length > 4 && t.Contains('u') select t;
+            foreach (string t in monthSelect)
+                Console.Write(t + " ");
+
+            List<Date> list = new List<Date>();
+            Date date1 = new Date(16, 5, 1999); list.Add(date1);
+            Date date2 = new Date(29, 4, 1999); list.Add(date2);
+            Date date3 = new Date(14, 12, 1999); list.Add(date3);
+            Date date4 = new Date(2, 7, 2000); list.Add(date4);
+            Date date5 = new Date(6, 12, 2018); list.Add(date5);
+
+            Console.Write("\nEnter year: ");
+            int year = int.Parse(Console.ReadLine());
+            var listSelect = from t in list where t.year == year select t;
+            foreach (Date t in listSelect)
+                Out(t);
+
+            Console.WriteLine("\nEnter month:");
+            int month = int.Parse(Console.ReadLine());
+            listSelect = from t in list where t.month == month select t;
+            foreach (Date t in listSelect)
+                Out(t);
+
+            Console.Write("\nEnter range: \nFrom: ");
+            int range1 = int.Parse(Console.ReadLine());
+            Console.Write("To: ");
+            int range2 = int.Parse(Console.ReadLine());
+
+            listSelect = from t in list where t.year >= range1 && t.year <= range2 select t;
+            int count = 0;
+            foreach (Date t in listSelect)
+            {
+                Out(t);
+                count++;
+            }
+            Console.WriteLine("Dates from the range amount: " + count);
+
+            listSelect = from t in list orderby t.year, t.month, t.day select t;
+            Console.WriteLine("Max date: " + listSelect.Last().day + "." + listSelect.Last().month + "." + listSelect.Last().year);
+
+            Console.WriteLine("Enter day: ");
+            int day = int.Parse(Console.ReadLine());
+            listSelect = from t in list where t.day == day select t;
+            Console.WriteLine($"First date with {day} day: " + listSelect.First().day + "." + listSelect.First().month + "." + listSelect.First().year);
+
+            Console.WriteLine("Chronological order: ");
+            listSelect = from t in list orderby t.year, t.month, t.day select t;
+            foreach (Date t in listSelect)
+                Out(t);
+
+            List<Team> teams = new List<Team>()
+            {
+                new Team {Name = "Juventus", Country = "Italy" },
+                new Team {Name = "Barcelona", Country = "Spain" },
+                new Team {Name = "Liverpool", Country = "England" }
+
+            };
+
+            List<Player> players = new List<Player>()
+            {
+                new Player {Name = "Ronaldo", Team = "Juventus" },
+                new Player {Name = "Messi", Team = "Barcelona" },
+                new Player {Name = "Salah", Team = "Liverpool" }
+            };
+
+            var result = from pl in players join t in teams on pl.Team equals t.Name orderby t.Name ascending select new { Name = pl.Name, Team = pl.Team, Country = t.Country };
+            foreach (var item in result)
+                Console.WriteLine("{0} - {1} ({2})", item.Name, item.Team, item.Country);
+
+        }
+    }
+}
