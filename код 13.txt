@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lab13
+{
+    class SDIDirInfo // методами для вывода информации о конкретном директории 
+    {
+        public static void GetDirInfo(string path) 
+        {
+            Console.WriteLine("Количество файлов в папке : " + new DirectoryInfo(path).GetFiles().Length); //вывод с определеннми параметрами
+            Console.WriteLine("Время создания : " + new DirectoryInfo(path).CreationTime);
+            Console.WriteLine("Количество подпапок : " + new DirectoryInfo(path).GetDirectories().Length);
+            Console.WriteLine("Родительская папка : " + new DirectoryInfo(path).Parent);
+            Console.WriteLine();
+            using (StreamWriter sw = new StreamWriter("SDIlogfile.txt", true)) //блок который выводит информацию об изменениях в методе, using область видимости
+            {
+                SDILog.Log(typeof(SDIDirInfo), "GetDirInfo", sw);
+            }
+        }
+    }
+    class SDIDiskInfo //методами для вывода информации о диске
+    {
+        public static void GetDriveInfo(string diskName)
+        {
+            Console.WriteLine("Информация о диске :");
+            foreach (DriveInfo drive in DriveInfo.GetDrives())
+            {
+                if (drive.Name == diskName)
+                {
+                    Console.WriteLine("Общий размер диска : " + drive.TotalSize); //TotalSize общий размер диска в байтах
+                    Console.WriteLine("Свободно места на диске : " + drive.TotalFreeSpace); //TotalFreeSpace: получает общий объем свободного места на диске в байтах
+                    Console.WriteLine("Метка тома : " + drive.VolumeLabel);// VolumeLabel: получает или устанавливает метку тома
+                    Console.WriteLine("Имя файловой системы : " + drive.DriveFormat);//DriveFormat: получает имя файловой системы
+                    Console.WriteLine();
+                }
+            }
+            using (StreamWriter sw = new StreamWriter("SDIlogfile.txt", true)) //блок который выводит информацию об изменениях в методе, using область видимости
+            {
+                SDILog.Log(typeof(SDIDiskInfo), "GetDriveInfo", sw);
+            }
+        }
+    }
+    class SDIFIleInfo // методами для вывода информации о конкретном файле
+    {
+        public static void GetFileInfo(string path)
+        {
+            Console.WriteLine("Путь : " + Path.GetFileName(path)); //path встроенный класс, метод из него 
+            Console.WriteLine("Расширение : " + Path.GetExtension(path));
+            Console.WriteLine("Полный путь : " + Path.GetFullPath(path));
+            Console.WriteLine("Время создания : " + File.GetCreationTime(path));
+            Console.WriteLine();
+            using (StreamWriter sw = new StreamWriter("SDIlogfile.txt", true)) //блок который выводит информацию об изменениях в методе, using область видимости
+            {
+                SDILog.Log(typeof(SDIFIleInfo), "GetFileInfo", sw);
+            }
+        }
+    }
+    class SDILog //Он должен отвечать за работу с текстовым файлом 
+    {
+        public static void Log(Type t, string info, StreamWriter sw) //заносим все содержимое файла в переменную 
+        {
+            sw.WriteLine(DateTime.Now + " - " + t.FullName + " - " + info);
+        }
+
+        public static void Read(string path) //выводим эту переменную
+        {
+            string text = File.ReadAllText(path);
+            Console.WriteLine(text);
+
+        }
+
+        public static void Search(string path, string info)
+        {
+
+            foreach (string line in File.ReadLines(path)) //выводит заданное info
+            {
+                if (line.Contains(info))
+                {
+                    Console.WriteLine(line);
+                }
+            }
+        }
+
+        public static void NumberOfLines() //считает количество записей
+        {
+            using (StreamReader sr = new StreamReader("SDIlogfile.txt", true))
+            {
+                String line;
+                int i = 0;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    i++;
+                }
+                Console.WriteLine("Количество записей:" + i.ToString());
+            }
+        }
+
+
+    }
+    class SDIFileManager //Набор методов
+    {
+        public static void Manager1(string path)
+        {
+            DirectoryInfo di = new DirectoryInfo(@"D:\SDIInspect"); //создаем папку
+            di.Create(); //creat создает папку
+            StreamWriter sw = new StreamWriter(@"D:\SDIInspect\SDIdirinfo.txt");
+            sw.WriteLine("Количество файлов : " + new DirectoryInfo(path).GetFiles().Length);//в папку записываем файлы
+            sw.WriteLine("Количество папок : " + new DirectoryInfo(path).GetDirectories().Length);
+            sw.Close();
+            FileInfo fi = new FileInfo(@"D:\SDIInspect\SDIdirinfo.txt");
+            fi.CopyTo(@"D:\SDIdirinfo2.txt");// копируем файл с именем2 и удаляем оригинал
+            fi.Delete();
+            using (StreamWriter sw1 = new StreamWriter("SDIlogfile.txt", true)) //блок который выводит информацию об изменениях в методе, using область видимости
+            {
+                SDILog.Log(typeof(SDIFileManager), "Manager1", sw1);
+            }
+        }
+
+        public static void Manager2()
+        {
+
+            DirectoryInfo di = new DirectoryInfo(@"D:\SDIFiles");
+            di.Create();
+            DirectoryInfo di2 = new DirectoryInfo(@"D:\\");
+            foreach (FileInfo fi in di2.GetFiles())
+            {
+                if (fi.Extension == ".txt")
+                {
+
+                    fi.CopyTo($@"D:\SDIFiles\{fi.Name}"); //ищет текстовые и переносит их в папку созданную раннее
+                }
+            }
+            di.MoveTo(@"D:\SDIInspect\SDIFiles");
+            ZipFile.CreateFromDirectory(@"D:\SDIInspect\SDIFiles", @"D:\\Lab13.zip"); //архивация
+            ZipFile.ExtractToDirectory(@"D:\\Lab13.zip", @"D:\DirectoryForZip"); //разархивация
+            using (StreamWriter sw = new StreamWriter("SDIlogfile.txt", true)) //блок который выводит информацию об изменениях в методе, using область видимости
+            {
+                SDILog.Log(typeof(SDIFileManager), "Manager2", sw);
+            }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            StreamWriter sw = new StreamWriter("SDIlogfile.txt", true); // создание файла
+            sw.Close();//закрываем файл
+            SDILog.Read("SDIlogfile.txt"); //выводит файл
+            SDIDiskInfo.GetDriveInfo("C:\\"); // информация о диске
+            SDIFIleInfo.GetFileInfo(@"D:\1.txt");// инфа о файле
+            SDIDirInfo.GetDirInfo(@"D:\scrin"); //инфа о папке
+            SDIFileManager.Manager1("D:\\"); //выводим содержимое
+            SDIFileManager.Manager2();
+            SDILog.Search("SDIlogfile.txt", "19.12.2018");// поиск по дате 
+            SDILog.NumberOfLines();
+        }
+    }
+}
